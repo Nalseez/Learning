@@ -51,3 +51,18 @@ def similarity_pearson(prefs, person1, person2):
 	return num/den
 
 print(similarity_pearson(critics, 'Nalseez', 'Lisa Rose'))
+
+
+def topMatches(prefs, person, n=5, similarityFunction=similarity_pearson):
+	scores=[(similarityFunction(prefs, person, otherPerson), otherPerson) for otherPerson in prefs if otherPerson != person]
+
+	# Sort the list so the highest scores appear at the top
+	scores.sort()
+	scores.reverse()
+	return scores[0:n]
+
+
+
+print(topMatches(critics, 'Nalseez'))
+
+print(topMatches(critics, 'Nalseez', similarityFunction=similarity_euclidean_distance))
