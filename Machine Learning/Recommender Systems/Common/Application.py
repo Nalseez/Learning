@@ -62,7 +62,38 @@ def topMatches(prefs, person, n=5, similarityFunction=similarity_pearson):
 	return scores[0:n]
 
 
-
+print('\nThese are the other people you are considered to be similar with using Pearson Similarity')
 print(topMatches(critics, 'Nalseez'))
-
+print('\nThese are the other people you are considered to be similar with using Euclidean Distance Similarity')
 print(topMatches(critics, 'Nalseez', similarityFunction=similarity_euclidean_distance))
+
+
+def getRecommendations(prefs, person, similarityFunction=similarity_pearson):
+	totals={}
+	simSums={}
+
+	for otherPerson in prefs:
+		if person == otherPerson: continue
+		similarity = similarityFunction(prefs, person, otherPerson)
+
+		if similarity < 0: continue
+		for item in prefs[otherPerson]:
+			if item not in prefs[person] or prefs[person][item]==0:
+				# Similarity * Score
+				totals.setdefault(item,0)
+				totals[item] += prefs[otherPerson][item] * similarity
+
+				# Sum similarities
+				simSums.setdefault(item,0)
+				simSums[item] += similarity
+
+	# Normalize
+	rankings = [ (total/simSums[item], item) for item,total in totals.items()]
+
+	# return the sorted list
+	rankings.sort()
+	rankings.reverse()
+	return rankings
+
+print('\nThese are movies youd like to see!')
+print(getRecommendations(critics, 'Nalseez'))
