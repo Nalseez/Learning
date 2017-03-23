@@ -97,3 +97,20 @@ def getRecommendations(prefs, person, similarityFunction=similarity_pearson):
 
 print('\nThese are movies youd like to see!')
 print(getRecommendations(critics, 'Nalseez'))
+print(getRecommendations(critics, 'Nalseez',similarityFunction=similarity_euclidean_distance))
+
+
+def transformPrefs(prefs):
+	result={}
+	for person in prefs:
+		for item in prefs[person]:
+			result.setdefault(item,{})
+
+			result[item][person] = prefs[person][item]
+	return result
+
+print(critics)
+print(transformPrefs(critics))
+
+
+print(topMatches(transformPrefs(critics), 'Just My Luck'))
